@@ -18,6 +18,9 @@ defmodule HelloExWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/phoenix", PageController, :phoenix
+
+    live "/game/:game_id", GameLive
   end
 
   # Other scopes may use custom stacks.
