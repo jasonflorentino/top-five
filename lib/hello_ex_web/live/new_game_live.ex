@@ -3,12 +3,19 @@ defmodule HelloExWeb.NewGameLive do
 
   def render(assigns) do
     ~H"""
-    <button phx-click="new_game">New Game</button>
+    <button
+      phx-click="new_game"
+      class="border-0 block w-full px-3 p-3 text-green-100 bg-green-600 rounded"
+    >
+      <span class="font-semibold">
+        New Game
+      </span>
+    </button>
     """
   end
 
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, socket, layout: false}
   end
 
   def handle_event("new_game", _params, socket) do
