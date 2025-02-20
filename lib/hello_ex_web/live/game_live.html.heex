@@ -1,10 +1,21 @@
 <section id="players" class="border">
+  <%!-- <h2>Player</h2>
+  <div id={"user_#{@user.id}"}>
+    {@user.id}
+  </div> --%>
+
+  <div>
+    Game ID: {@game_id} Users: {inspect(@users)}
+    <%= if assigns[:user] do %>
+      User: {inspect(@user)}
+    <% end %>
+  </div>
+
   <div>
     <h2>Players</h2>
     <ul>
-      <%!-- TODO: Handle rendering the user --%>
-      <%= for { id } <- @users do %>
-        <li>{id}</li>
+      <%= for user <- @users do %>
+        <li>{user.id}</li>
       <% end %>
     </ul>
   </div>

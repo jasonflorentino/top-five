@@ -53,7 +53,8 @@ defmodule HelloExWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {HelloExWeb.Layouts, :app}
+        layout: {HelloExWeb.Layouts, :app},
+        allow_debug_assigns: true
 
       unquote(html_helpers())
     end

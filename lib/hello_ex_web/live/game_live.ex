@@ -12,7 +12,7 @@ defmodule HelloExWeb.GameLive do
 
       PubSub.subscribe(HelloEx.PubSub, @topic <> game_id)
       broadcast_join(game_id, user_data)
-      {:ok, assign(socket, game_id: game_id, users: [user_data], user: user_data)}
+      {:ok, assign(socket, game_id: game_id, users: [], user: user_data)}
     else
       {:ok, assign(socket, game_id: game_id, users: [])}
     end
@@ -32,16 +32,21 @@ defmodule HelloExWeb.GameLive do
     {:noreply, update(socket, :users, &[user_data | &1])}
   end
 
-  def handle_info({:user_left, user_data}, socket) do
-    {:noreply, update(socket, :users, &List.delete(&1, user_data))}
+  def handle_info({:user_left, user_id}, socket) do
+    {:noreply,
+     assign(
+       socket,
+       :users,
+       Enum.filter(socket.assigns.users, fn user -> user.id == user_id end)
+     )}
   end
 
   defp broadcast_join(game_id, user_data) do
     PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_joined, user_data})
   end
 
-  defp broadcast_leave(game_id, user_data) do
-    PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_left, user_data})
+  defp broadcast_leave(game_id, user_id) do
+    PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_left, user_id})
   end
 
   defp toUserId(socket) do
