@@ -11,8 +11,7 @@ defmodule HelloEx.Application do
       HelloExWeb.Telemetry,
       HelloEx.Repo,
       {Ecto.Migrator,
-        repos: Application.fetch_env!(:hello_ex, :ecto_repos),
-        skip: skip_migrations?()},
+       repos: Application.fetch_env!(:hello_ex, :ecto_repos), skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:hello_ex, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: HelloEx.PubSub},
       # Start the Finch HTTP client for sending emails
@@ -20,7 +19,8 @@ defmodule HelloEx.Application do
       # Start a worker by calling: HelloEx.Worker.start_link(arg)
       # {HelloEx.Worker, arg},
       # Start to serve requests, typically the last entry
-      HelloExWeb.Endpoint
+      HelloExWeb.Endpoint,
+      {HelloEx.GamePlayers, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

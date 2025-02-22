@@ -5,22 +5,31 @@ defmodule HelloExWeb.GameLive do
   @topic "game:"
 
   def mount(%{"game_id" => game_id}, _session, socket) do
-    if connected?(socket) do
-      user_data = %{
-        id: toUserId(socket)
-      }
+    IO.inspect(connected?(socket), label: "mount")
 
+    user_id = HelloExWeb.Helpers.to_user_id(socket)
+
+    user_data = %{
+      id: user_id,
+      name: :crypto.strong_rand_bytes(4) |> Base.encode16(case: :lower)
+    }
+
+    users = Map.values(HelloEx.GamePlayers.get_users(game_id))
+
+    IO.inspect(users, label: "users")
+    IO.inspect(connected?(socket), label: "connected")
+
+    if connected?(socket) do
       PubSub.subscribe(HelloEx.PubSub, @topic <> game_id)
       broadcast_join(game_id, user_data)
-      {:ok, assign(socket, game_id: game_id, users: [], user: user_data)}
-    else
-      {:ok, assign(socket, game_id: game_id, users: [])}
     end
+
+    {:ok, assign(socket, game_id: game_id, users: users, user: user_data)}
   end
 
   def terminate(_reason, socket) do
     if connected?(socket) do
-      broadcast_leave(socket.assigns.game_id, toUserId(socket))
+      broadcast_leave(socket.assigns.game_id, HelloExWeb.Helpers.to_user_id(socket))
     end
   end
 
@@ -42,14 +51,12 @@ defmodule HelloExWeb.GameLive do
   end
 
   defp broadcast_join(game_id, user_data) do
+    HelloEx.GamePlayers.upsert_user(game_id, user_data.id, user_data)
     PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_joined, user_data})
   end
 
   defp broadcast_leave(game_id, user_id) do
+    HelloEx.GamePlayers.del_user(game_id, user_id)
     PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_left, user_id})
-  end
-
-  defp toUserId(socket) do
-    "user_" <> socket.id
   end
 end

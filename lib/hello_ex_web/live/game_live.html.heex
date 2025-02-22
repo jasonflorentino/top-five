@@ -1,23 +1,16 @@
+<section id="player">
+  <%= case @user do %>
+    <% %{name: name} -> %>
+    <p>User: <%= name %></p>
+    <% _ -> %>
+    <p>User: Unknown</p>
+  <% end %>
+</section>
 <section id="players" class="border">
-  <%!-- <h2>Player</h2>
-  <div id={"user_#{@user.id}"}>
-    {@user.id}
-  </div> --%>
-
-  <div>
-    Game ID: {@game_id} Users: {inspect(@users)}
-    <%= if assigns[:user] do %>
-      User: {inspect(@user)}
-    <% end %>
-  </div>
-
   <div>
     <h2>Players</h2>
-    <ul>
-      <%= for user <- @users do %>
-        <li>{user.id}</li>
-      <% end %>
-    </ul>
+    <div>Users: {inspect(@users)}</div>
+    <ul></ul>
   </div>
 </section>
 
