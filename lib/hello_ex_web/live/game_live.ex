@@ -46,7 +46,7 @@ defmodule HelloExWeb.GameLive do
      assign(
        socket,
        :users,
-       Enum.filter(socket.assigns.users, fn user -> user.id == user_id end)
+       Enum.filter(socket.assigns.users, fn user -> user.id != user_id end)
      )}
   end
 

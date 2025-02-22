@@ -9,8 +9,18 @@
 <section id="players" class="border">
   <div>
     <h2>Players</h2>
-    <div>Users: {inspect(@users)}</div>
-    <ul></ul>
+    <ul>
+    <%= if not Enum.empty?(@users) do %>
+      <%= for user <- @users do %>
+          <li>
+            <p>Name: <%= user.name %></p>
+            <p>ID: <%= user.id%></p>
+          </li>
+      <% end %>
+    <% else %>
+      <li>No players</li>
+    <% end %>
+    </ul>
   </div>
 </section>
 
