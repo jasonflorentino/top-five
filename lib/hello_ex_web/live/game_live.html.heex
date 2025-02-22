@@ -1,21 +1,21 @@
-<section id="player">
-  <%= case @user do %>
-    <% %{name: name} -> %>
-    <p>User: <%= name %></p>
-    <% _ -> %>
-    <p>User: Unknown</p>
-  <% end %>
-</section>
-<section id="players" class="border">
+<section id="players" class="p-3 bg-gray-900 rounded-lg">
   <div>
-    <h2>Players</h2>
+    <h2 class="text-xl pb-2">Players</h2>
     <ul>
     <%= if not Enum.empty?(@users) do %>
       <%= for user <- @users do %>
-          <li>
-            <p>Name: <%= user.name %></p>
-            <p>ID: <%= user.id%></p>
-          </li>
+      <% is_current = user.id == @user.id %>
+        <li class="border-t py-2">
+          <p>
+            <span class={class(["font-bold", is_current && "text-green-400"])}>
+              <%= user.name %>
+            </span>
+            <%= if is_current do %>
+              <span>(Me)</span>
+            <% end %>
+          </p>
+          <p>ID: <%= user.id%></p>
+        </li>
       <% end %>
     <% else %>
       <li>No players</li>

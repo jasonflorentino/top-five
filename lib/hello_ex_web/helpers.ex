@@ -4,4 +4,10 @@ defmodule HelloExWeb.Helpers do
   def to_user_id(socket) do
     @user_prefix <> socket.id
   end
+
+  def class(classes) do
+    classes
+    |> Enum.filter(& &1)
+    |> Enum.join(" ")
+  end
 end

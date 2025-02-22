@@ -1,12 +1,11 @@
 defmodule HelloExWeb.GameLive do
   alias Phoenix.PubSub
   use HelloExWeb, :live_view
+  import HelloExWeb.Helpers
 
   @topic "game:"
 
   def mount(%{"game_id" => game_id}, _session, socket) do
-    IO.inspect(connected?(socket), label: "mount")
-
     user_id = HelloExWeb.Helpers.to_user_id(socket)
 
     user_data = %{
@@ -15,9 +14,6 @@ defmodule HelloExWeb.GameLive do
     }
 
     users = Map.values(HelloEx.GamePlayers.get_users(game_id))
-
-    IO.inspect(users, label: "users")
-    IO.inspect(connected?(socket), label: "connected")
 
     if connected?(socket) do
       PubSub.subscribe(HelloEx.PubSub, @topic <> game_id)
