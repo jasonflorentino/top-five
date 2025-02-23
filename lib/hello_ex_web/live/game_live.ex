@@ -13,14 +13,15 @@ defmodule HelloExWeb.GameLive do
       name: :crypto.strong_rand_bytes(4) |> Base.encode16(case: :lower)
     }
 
-    users = Map.values(HelloEx.GamePlayers.get_users(game_id))
+    users = Map.values(HelloEx.Game.get_players(game_id))
+    items = Map.values(HelloEx.Game.get_items(game_id))
 
     if connected?(socket) do
       PubSub.subscribe(HelloEx.PubSub, @topic <> game_id)
-      broadcast_join(game_id, user_data)
+      broadcast_user_update(game_id, user_data)
     end
 
-    {:ok, assign(socket, game_id: game_id, users: users, user: user_data)}
+    {:ok, assign(socket, game_id: game_id, users: users, user: user_data, items: items)}
   end
 
   def terminate(_reason, socket) do
@@ -33,8 +34,9 @@ defmodule HelloExWeb.GameLive do
     {:noreply, assign(socket, :game_id, game_id)}
   end
 
-  def handle_info({:user_joined, user_data}, socket) do
-    {:noreply, update(socket, :users, &[user_data | &1])}
+  def handle_info({:user_update, game_id}, socket) do
+    users = Map.values(HelloEx.Game.get_players(game_id))
+    {:noreply, assign(socket, :users, users)}
   end
 
   def handle_info({:user_left, user_id}, socket) do
@@ -46,13 +48,57 @@ defmodule HelloExWeb.GameLive do
      )}
   end
 
-  defp broadcast_join(game_id, user_data) do
-    HelloEx.GamePlayers.upsert_user(game_id, user_data.id, user_data)
-    PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_joined, user_data})
+  def handle_info({:item_update, game_id}, socket) do
+    items = Map.values(HelloEx.Game.get_items(game_id))
+    {:noreply, assign(socket, :items, items)}
+  end
+
+  def handle_event(
+        "add_game_item",
+        %{"game_id" => game_id, "player_id" => player_id, "item_name" => item_name},
+        socket
+      ) do
+    item_data = %{
+      id: "asdf",
+      key: item_name,
+      name: item_name,
+      added_by: player_id
+    }
+
+    broadcast_item_update(game_id, item_data)
+
+    items = Map.values(HelloEx.Game.get_items(game_id))
+    {:noreply, assign(socket, :items, items)}
+  end
+
+  def handle_event(
+        "set_player_name",
+        %{"game_id" => game_id, "player_id" => player_id, "player_name" => player_name},
+        socket
+      ) do
+    user_data = %{
+      id: player_id,
+      name: player_name
+    }
+
+    broadcast_user_update(game_id, user_data)
+
+    users = Map.values(HelloEx.Game.get_players(game_id))
+    {:noreply, assign(socket, :users, users)}
+  end
+
+  defp broadcast_item_update(game_id, item_data) do
+    HelloEx.Game.add_item(game_id, item_data)
+    PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:item_update, game_id})
+  end
+
+  defp broadcast_user_update(game_id, user_data) do
+    HelloEx.Game.upsert_player(game_id, user_data.id, user_data)
+    PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_update, game_id})
   end
 
   defp broadcast_leave(game_id, user_id) do
-    HelloEx.GamePlayers.del_user(game_id, user_id)
+    HelloEx.Game.del_player(game_id, user_id)
     PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_left, user_id})
   end
 end

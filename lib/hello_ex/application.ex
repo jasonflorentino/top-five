@@ -20,7 +20,7 @@ defmodule HelloEx.Application do
       # {HelloEx.Worker, arg},
       # Start to serve requests, typically the last entry
       HelloExWeb.Endpoint,
-      {HelloEx.GamePlayers, []}
+      {HelloEx.Game, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
