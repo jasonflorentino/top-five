@@ -1,7 +1,6 @@
 defmodule HelloExWeb.GameLive do
   alias Phoenix.PubSub
   use HelloExWeb, :live_view
-  import HelloExWeb.Helpers
 
   @topic "game:"
 
@@ -15,13 +14,21 @@ defmodule HelloExWeb.GameLive do
 
     users = Map.values(HelloEx.Game.get_players(game_id))
     items = Map.values(HelloEx.Game.get_items(game_id))
+    status = HelloEx.Game.get_status(game_id)
 
     if connected?(socket) do
       PubSub.subscribe(HelloEx.PubSub, @topic <> game_id)
       broadcast_user_update(game_id, user_data)
     end
 
-    {:ok, assign(socket, game_id: game_id, users: users, user: user_data, items: items)}
+    {:ok,
+     assign(socket,
+       game_id: game_id,
+       game_status: status,
+       users: users,
+       user: user_data,
+       items: items
+     )}
   end
 
   def terminate(_reason, socket) do
@@ -33,6 +40,8 @@ defmodule HelloExWeb.GameLive do
   def handle_params(%{"game_id" => game_id}, _uri, socket) do
     {:noreply, assign(socket, :game_id, game_id)}
   end
+
+  # subscription handlers
 
   def handle_info({:user_update, game_id}, socket) do
     users = Map.values(HelloEx.Game.get_players(game_id))
@@ -53,6 +62,36 @@ defmodule HelloExWeb.GameLive do
     {:noreply, assign(socket, :items, items)}
   end
 
+  def handle_info({:status_update, game_id}, socket) do
+    status = HelloEx.Game.get_status(game_id)
+    {:noreply, assign(socket, :game_status, status)}
+  end
+
+  # client event handlers
+
+  def handle_event(
+        "set_player_name",
+        %{"game_id" => game_id, "player_id" => player_id, "player_name" => player_name},
+        socket
+      ) do
+    user_data = %{
+      id: player_id,
+      name: player_name
+    }
+
+    broadcast_user_update(game_id, user_data)
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "set_game_status",
+        %{"game_id" => game_id, "game_status" => game_status},
+        socket
+      ) do
+    broadcast_status_update(game_id, game_status)
+    {:noreply, socket}
+  end
+
   def handle_event(
         "add_game_item",
         %{"game_id" => game_id, "player_id" => player_id, "item_name" => item_name},
@@ -66,35 +105,24 @@ defmodule HelloExWeb.GameLive do
     }
 
     broadcast_item_update(game_id, item_data)
-
-    items = Map.values(HelloEx.Game.get_items(game_id))
-    {:noreply, assign(socket, :items, items)}
+    {:noreply, socket}
   end
 
-  def handle_event(
-        "set_player_name",
-        %{"game_id" => game_id, "player_id" => player_id, "player_name" => player_name},
-        socket
-      ) do
-    user_data = %{
-      id: player_id,
-      name: player_name
-    }
-
-    broadcast_user_update(game_id, user_data)
-
-    users = Map.values(HelloEx.Game.get_players(game_id))
-    {:noreply, assign(socket, :users, users)}
-  end
+  # broadcasters
 
   defp broadcast_item_update(game_id, item_data) do
-    HelloEx.Game.add_item(game_id, item_data)
+    HelloEx.Game.put_item(game_id, item_data)
     PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:item_update, game_id})
   end
 
   defp broadcast_user_update(game_id, user_data) do
-    HelloEx.Game.upsert_player(game_id, user_data.id, user_data)
+    HelloEx.Game.put_player(game_id, user_data.id, user_data)
     PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:user_update, game_id})
+  end
+
+  defp broadcast_status_update(game_id, status) do
+    HelloEx.Game.set_status(game_id, status)
+    PubSub.broadcast(HelloEx.PubSub, @topic <> game_id, {:status_update, game_id})
   end
 
   defp broadcast_leave(game_id, user_id) do
