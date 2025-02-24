@@ -1,8 +1,8 @@
 import Config
 
 # Configure your database
-config :hello_ex, HelloEx.Repo,
-  database: Path.expand("../hello_ex_dev.db", __DIR__),
+config :top_five, TopFive.Repo,
+  database: Path.expand("../top_five_dev.db", __DIR__),
   pool_size: 5,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
@@ -14,7 +14,7 @@ config :hello_ex, HelloEx.Repo,
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
 # Binding to loopback ipv4 address prevents access from other machines.
-config :hello_ex, HelloExWeb.Endpoint,
+config :top_five, TopFiveWeb.Endpoint,
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
@@ -22,8 +22,8 @@ config :hello_ex, HelloExWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "LxfDCnexyO4FqP7MPeaVj2lNkwdZbj2Ub2m0wwrOsmU6kTnnpCzGCqVf3VdDnTgK",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:hello_ex, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:hello_ex, ~w(--watch)]}
+    esbuild: {Esbuild, :install_and_run, [:top_five, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:top_five, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -50,17 +50,17 @@ config :hello_ex, HelloExWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :hello_ex, HelloExWeb.Endpoint,
+config :top_five, TopFiveWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/hello_ex_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/top_five_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :hello_ex, dev_routes: true
+config :top_five, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

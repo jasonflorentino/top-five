@@ -1,12 +1,12 @@
-defmodule HelloExWeb.ErrorJSONTest do
-  use HelloExWeb.ConnCase, async: true
+defmodule TopFiveWeb.ErrorJSONTest do
+  use TopFiveWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert HelloExWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert TopFiveWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
   end
 
   test "renders 500" do
-    assert HelloExWeb.ErrorJSON.render("500.json", %{}) ==
+    assert TopFiveWeb.ErrorJSON.render("500.json", %{}) ==
              %{errors: %{detail: "Internal Server Error"}}
   end
 end

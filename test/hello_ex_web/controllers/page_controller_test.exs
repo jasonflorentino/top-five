@@ -1,5 +1,5 @@
-defmodule HelloExWeb.PageControllerTest do
-  use HelloExWeb.ConnCase
+defmodule TopFiveWeb.PageControllerTest do
+  use TopFiveWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
