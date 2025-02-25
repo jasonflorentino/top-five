@@ -5,7 +5,7 @@ defmodule TopFiveWeb.GameLive do
   @topic "game:"
 
   def mount(%{"game_id" => game_id}, _session, socket) do
-    user_id = TopFiveWeb.Helpers.to_user_id(socket)
+    user_id = TopFive.Helpers.to_user_id(socket)
 
     user_data = %{
       id: user_id,
@@ -33,7 +33,7 @@ defmodule TopFiveWeb.GameLive do
 
   def terminate(_reason, socket) do
     if connected?(socket) do
-      broadcast_leave(socket.assigns.game_id, TopFiveWeb.Helpers.to_user_id(socket))
+      broadcast_leave(socket.assigns.game_id, TopFive.Helpers.to_user_id(socket))
     end
   end
 

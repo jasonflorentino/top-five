@@ -1,6 +1,6 @@
 defmodule TopFiveWeb.GameChoosingComponent do
   use Phoenix.LiveComponent
-  import TopFiveWeb.Helpers
+  import TopFive.Helpers
 
   def render(assigns) do
     ~H"""
