@@ -69,9 +69,9 @@ defmodule TopFiveWeb.GameLive do
 
   # client event handlers
 
-  def handle_event(
-        "set_player_name",
-        %{"game_id" => game_id, "player_id" => player_id, "player_name" => player_name},
+  def handle_info(
+        {:set_player_name,
+         %{"game_id" => game_id, "player_id" => player_id, "player_name" => player_name}},
         socket
       ) do
     user_data = %{
