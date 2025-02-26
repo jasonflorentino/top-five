@@ -1,5 +1,6 @@
 defmodule TopFiveWeb.GameLobbyComponent do
   alias TopFiveWeb.ButtonComponent
+  alias TopFiveWeb.PlayerNameComponent
   use Phoenix.LiveComponent
   import TopFive.Helpers
 
@@ -71,28 +72,12 @@ defmodule TopFiveWeb.GameLobbyComponent do
         </div>
 
         <nav id="actions" class="flex flex-col gap-4 items-center">
-          <form phx-submit="set_player_name" class="flex flex-col gap-2 w-full">
-            <div class="flex flex-col gap-1">
-              <input id="game_id" name="game_id" type="hidden" value={@game_id} />
-              <input id="player_id" name="player_id" type="hidden" value={@user.id} />
-              <label for="player_name" class="text-sm">Enter your name</label>
-              <div class="flex gap-2">
-                <input
-                  id="player_name"
-                  name="player_name"
-                  type="text"
-                  autocomplete="off"
-                  class="w-3/4 rounded bg-gray-800/80 hover:bg-gray-700/50 focus:bg-gray-700/50"
-                />
-                <.live_component
-                  module={ButtonComponent}
-                  id="submit-name"
-                  class="w-1/4"
-                  text="Submit"
-                />
-              </div>
-            </div>
-          </form>
+          <.live_component
+            module={PlayerNameComponent}
+            id="player_name"
+            game_id={@game_id}
+            user={@user}
+          />
 
           <form phx-submit="set_game_status">
             <input type="hidden" name="game_id" value={@game_id} />
