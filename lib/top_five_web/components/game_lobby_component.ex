@@ -75,6 +75,7 @@ defmodule TopFiveWeb.GameLobbyComponent do
           <.live_component
             module={PlayerNameComponent}
             id="player_name"
+            submit_event={:set_player_name}
             disabled={true}
             game_id={@game_id}
             user={@user}

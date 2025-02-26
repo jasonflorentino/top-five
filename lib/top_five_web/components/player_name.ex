@@ -4,7 +4,7 @@ defmodule TopFiveWeb.PlayerNameComponent do
 
   def render(assigns) do
     ~H"""
-    <form phx-submit="set_player_name" phx-target={@myself} class="flex flex-col gap-2 w-full">
+    <form phx-submit="handle_submit" phx-target={@myself} class="flex flex-col gap-2 w-full">
       <div class="flex flex-col gap-1">
         <input id="game_id" name="game_id" type="hidden" value={@game_id} />
         <input id="player_id" name="player_id" type="hidden" value={@user.id} />
@@ -42,11 +42,11 @@ defmodule TopFiveWeb.PlayerNameComponent do
   end
 
   def handle_event(
-        "set_player_name",
+        "handle_submit",
         params,
         socket
       ) do
-    send(self(), {:set_player_name, params})
+    send(self(), {socket.assigns.submit_event, params})
 
     {:noreply, assign(socket, input_value: "", disabled: true)}
   end
