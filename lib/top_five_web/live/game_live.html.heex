@@ -1,10 +1,17 @@
 <div>
-<%= case @game_status do %>
-  <% :game_status_setup -> %>
-    <.live_component module={TopFiveWeb.GameLobbyComponent} id="game_lobby" items={@items} game_id={@game_id} user={@user} users={@users} />
-  <% :game_status_choosing -> %>
-    <.live_component module={TopFiveWeb.GameChoosingComponent} id="game_choosing" />
-  <% _ ->  %>
-    <p>Unknown status {@game_status}</p>
- <% end %>
+  <%= case normalize_status(@game_status) do %>
+    <% "game_status_setup" -> %>
+      <.live_component
+        module={TopFiveWeb.GameLobbyComponent}
+        id="game_lobby"
+        items={@items}
+        game_id={@game_id}
+        user={@user}
+        users={@users}
+      />
+    <% "game_status_choosing" -> %>
+      <.live_component module={TopFiveWeb.GameChoosingComponent} id="game_choosing" />
+    <% _ -> %>
+      <p>Unknown status {@game_status}</p>
+  <% end %>
 </div>

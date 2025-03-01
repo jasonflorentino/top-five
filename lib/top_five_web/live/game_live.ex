@@ -41,6 +41,9 @@ defmodule TopFiveWeb.GameLive do
     {:noreply, assign(socket, :game_id, game_id)}
   end
 
+  defp normalize_status(status) when is_atom(status), do: to_string(status)
+  defp normalize_status(status) when is_binary(status), do: status
+
   # subscription handlers
 
   def handle_info({:user_update, game_id}, socket) do
