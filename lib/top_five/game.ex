@@ -1,8 +1,14 @@
 defmodule TopFive.Game do
+  require Logger
   use Agent
 
   def start_link(_) do
     Agent.start_link(fn -> %{} end, name: __MODULE__)
+  end
+
+  def log_state(state) do
+    Logger.debug("GameState: #{inspect(state)}")
+    state
   end
 
   # get/set
@@ -40,7 +46,7 @@ defmodule TopFive.Game do
       items = Map.put(items, item_data.key, item_data)
 
       game = game_items_set(game, items)
-      Map.put(map, game_id, game)
+      Map.put(map, game_id, game) |> log_state
     end)
   end
 
@@ -51,7 +57,7 @@ defmodule TopFive.Game do
       players = Map.put(players, user_id, user_data)
 
       game = game_players_set(game, players)
-      Map.put(map, game_id, game)
+      Map.put(map, game_id, game) |> log_state
     end)
   end
 
@@ -60,7 +66,7 @@ defmodule TopFive.Game do
       game = Map.get(map, game_id, %{})
       game = game_status_set(game, game_status)
 
-      Map.put(map, game_id, game)
+      Map.put(map, game_id, game) |> log_state
     end)
   end
 
@@ -72,16 +78,16 @@ defmodule TopFive.Game do
 
       if map_size(players) > 0 do
         game = game_players_set(game, players)
-        Map.put(map, game_id, game)
+        Map.put(map, game_id, game) |> log_state
       else
-        Map.delete(map, game_id)
+        Map.delete(map, game_id) |> log_state
       end
     end)
   end
 
   def del_game(game_id) do
     Agent.update(__MODULE__, fn map ->
-      Map.delete(map, game_id)
+      Map.delete(map, game_id) |> log_state
     end)
   end
 

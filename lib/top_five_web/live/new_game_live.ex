@@ -19,7 +19,7 @@ defmodule TopFiveWeb.NewGameLive do
   end
 
   def handle_event("new_game", _params, socket) do
-    game_id = :crypto.strong_rand_bytes(4) |> Base.encode16(case: :lower)
+    game_id = TopFive.Helpers.new_game_id()
     {:noreply, push_navigate(socket, to: ~p"/game/#{game_id}")}
   end
 end

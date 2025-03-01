@@ -9,7 +9,7 @@ defmodule TopFiveWeb.GameLive do
 
     user_data = %{
       id: user_id,
-      name: :crypto.strong_rand_bytes(4) |> Base.encode16(case: :lower)
+      name: TopFive.Helpers.rand_hex(4)
     }
 
     users = Map.values(TopFive.Game.get_players(game_id))
@@ -89,7 +89,7 @@ defmodule TopFiveWeb.GameLive do
         socket
       ) do
     item_data = %{
-      id: "asdf",
+      id: TopFive.Helpers.new_thing_id(),
       key: item_name,
       name: item_name,
       added_by: player_id
