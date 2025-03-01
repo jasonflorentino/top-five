@@ -83,18 +83,9 @@ defmodule TopFiveWeb.GameLive do
     {:noreply, socket}
   end
 
-  def handle_event(
-        "set_game_status",
-        %{"game_id" => game_id, "game_status" => game_status},
-        socket
-      ) do
-    broadcast_status_update(game_id, game_status)
-    {:noreply, socket}
-  end
-
-  def handle_event(
-        "add_game_item",
-        %{"game_id" => game_id, "player_id" => player_id, "item_name" => item_name},
+  def handle_info(
+        {:add_game_item,
+         %{"game_id" => game_id, "player_id" => player_id, "item_name" => item_name}},
         socket
       ) do
     item_data = %{
@@ -105,6 +96,15 @@ defmodule TopFiveWeb.GameLive do
     }
 
     broadcast_item_update(game_id, item_data)
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "set_game_status",
+        %{"game_id" => game_id, "game_status" => game_status},
+        socket
+      ) do
+    broadcast_status_update(game_id, game_status)
     {:noreply, socket}
   end
 

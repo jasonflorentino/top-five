@@ -1,6 +1,7 @@
 defmodule TopFiveWeb.GameLobbyComponent do
   alias TopFiveWeb.ButtonComponent
   alias TopFiveWeb.PlayerNameComponent
+  alias TopFiveWeb.ThingNameComponent
   use Phoenix.LiveComponent
   import TopFive.Helpers
 
@@ -31,23 +32,14 @@ defmodule TopFiveWeb.GameLobbyComponent do
           <p class="py-2 flex justify-center">No Items yet</p>
         <% end %>
 
-        <form phx-submit="add_game_item" class="flex flex-col gap-2 w-full">
-          <div class="flex flex-col gap-1">
-            <input type="hidden" id="game_id" name="game_id" value={@game_id} />
-            <input type="hidden" id="player_id" name="player_id" value={@user.id} />
-            <label for="item_name" class="text-sm">Enter a thing</label>
-            <div class="flex gap-2">
-              <input
-                id="item_name"
-                name="item_name"
-                type="text"
-                autocomplete="off"
-                class="w-3/4 rounded bg-gray-800/80 hover:bg-gray-700/50 focus:bg-gray-700/50"
-              />
-              <.live_component module={ButtonComponent} id="submit-item" class="w-1/4" text="Submit" />
-            </div>
-          </div>
-        </form>
+        <.live_component
+          module={ThingNameComponent}
+          id="thing_name"
+          submit_event={:add_game_item}
+          disabled={true}
+          game_id={@game_id}
+          user={@user}
+        />
       </section>
 
       <section id="players" class="mt-6 p-3 bg-gray-900 rounded-lg ">
