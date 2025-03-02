@@ -66,8 +66,26 @@ defmodule TopFive.Game do
       game = Map.get(map, game_id, %{})
       game = game_status_set(game, game_status)
 
+      game =
+        case TopFive.Helpers.normalize_status(game_status) do
+          "game_status_choosing" ->
+            handle_status_choosing(game)
+
+          _ ->
+            Logger.warning("set_status: Unknown status #{game_status}")
+            game
+        end
+
       Map.put(map, game_id, game) |> log_state
     end)
+  end
+
+  def handle_status_choosing(game) do
+    players = game_players_get(game)
+    {user_id, player} = Enum.random(players)
+    player = Map.put(player, :is_choosing, true)
+    players = Map.put(players, user_id, player)
+    game_players_set(game, players)
   end
 
   def del_player(game_id, user_id) do

@@ -22,7 +22,7 @@ defmodule TopFiveWeb.GameLobbyComponent do
               <li class="px-4 py-2 bg-blue-400/20 rounded-full">
                 <p>
                   <span class={cn(["font-medium"])}>
-                    {item.name}
+                    {String.duplicate("x", String.length(item.name))}
                   </span>
                 </p>
               </li>

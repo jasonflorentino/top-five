@@ -19,6 +19,9 @@ defmodule TopFive.Helpers do
     @thing_prefix <> rand_hex(6)
   end
 
+  def normalize_status(status) when is_atom(status), do: to_string(status)
+  def normalize_status(status) when is_binary(status), do: status
+
   def cn(classes) do
     classes
     |> Enum.filter(& &1)

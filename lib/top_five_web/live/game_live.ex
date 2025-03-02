@@ -6,11 +6,7 @@ defmodule TopFiveWeb.GameLive do
 
   def mount(%{"game_id" => game_id}, _session, socket) do
     user_id = TopFive.Helpers.to_user_id(socket)
-
-    user_data = %{
-      id: user_id,
-      name: TopFive.Helpers.rand_hex(4)
-    }
+    user_data = new_user(user_id)
 
     users = Map.values(TopFive.Game.get_players(game_id))
     items = Map.values(TopFive.Game.get_items(game_id))
@@ -41,8 +37,23 @@ defmodule TopFiveWeb.GameLive do
     {:noreply, assign(socket, :game_id, game_id)}
   end
 
-  defp normalize_status(status) when is_atom(status), do: to_string(status)
-  defp normalize_status(status) when is_binary(status), do: status
+  def new_user(id, name \\ TopFive.Helpers.rand_hex(4)) do
+    %{
+      id: id,
+      name: name,
+      is_choosing: false,
+      top_five: []
+    }
+  end
+
+  def new_item(key, name, added_by) do
+    %{
+      id: TopFive.Helpers.new_thing_id(),
+      key: key,
+      name: name,
+      added_by: added_by
+    }
+  end
 
   # subscription handlers
 
@@ -66,8 +77,14 @@ defmodule TopFiveWeb.GameLive do
   end
 
   def handle_info({:status_update, game_id}, socket) do
+    user_id = TopFive.Helpers.to_user_id(socket)
+    players = TopFive.Game.get_players(game_id)
+
     status = TopFive.Game.get_status(game_id)
-    {:noreply, assign(socket, :game_status, status)}
+    users = Map.values(players)
+    user = Map.get(players, user_id)
+
+    {:noreply, assign(socket, game_status: status, users: users, user: user)}
   end
 
   # client event handlers
@@ -77,10 +94,11 @@ defmodule TopFiveWeb.GameLive do
          %{"game_id" => game_id, "player_id" => player_id, "player_name" => player_name}},
         socket
       ) do
-    user_data = %{
-      id: player_id,
-      name: player_name
-    }
+    user_data =
+      new_user(
+        player_id,
+        player_name
+      )
 
     broadcast_user_update(game_id, user_data)
     {:noreply, socket}
@@ -91,12 +109,7 @@ defmodule TopFiveWeb.GameLive do
          %{"game_id" => game_id, "player_id" => player_id, "item_name" => item_name}},
         socket
       ) do
-    item_data = %{
-      id: TopFive.Helpers.new_thing_id(),
-      key: item_name,
-      name: item_name,
-      added_by: player_id
-    }
+    item_data = new_item(item_name, item_name, player_id)
 
     broadcast_item_update(game_id, item_data)
     {:noreply, socket}
