@@ -11,6 +11,33 @@ defmodule TopFive.Game do
     state
   end
 
+  # entities
+
+  def new_user(id, name \\ TopFive.Helpers.rand_hex(4)) do
+    %{
+      id: id,
+      name: name,
+      is_choosing: false
+    }
+  end
+
+  def new_item(key, name, added_by) do
+    %{
+      id: TopFive.Helpers.new_thing_id(),
+      key: key,
+      name: name,
+      added_by: added_by
+    }
+  end
+
+  def new_round(chooser_id, items_ranked) do
+    %{
+      chooser: chooser_id,
+      chooser_rankings: items_ranked,
+      group_rankings: items_ranked
+    }
+  end
+
   # get/set
 
   def game_items_get(map) do
@@ -27,6 +54,14 @@ defmodule TopFive.Game do
 
   def game_players_set(map, players) do
     Map.put(map, :game_players, players)
+  end
+
+  def game_rounds_get(map) do
+    Map.get(map, :game_rounds, %{})
+  end
+
+  def game_rounds_set(map, rounds) do
+    Map.put(map, :game_rounds, rounds)
   end
 
   def game_status_get(map) do
@@ -85,7 +120,22 @@ defmodule TopFive.Game do
     {user_id, player} = Enum.random(players)
     player = Map.put(player, :is_choosing, true)
     players = Map.put(players, user_id, player)
-    game_players_set(game, players)
+
+    items_ranked = game_items_get(game) |> choose_items_to_rank()
+
+    rounds =
+      game
+      |> game_rounds_get()
+      |> Map.put(player[:id], new_round(player[:id], items_ranked))
+
+    game |> game_players_set(players) |> game_rounds_set(rounds)
+  end
+
+  def choose_items_to_rank(items) do
+    items
+    |> Map.to_list()
+    |> Enum.take_random(5)
+    |> Enum.map(fn {item_key, _item} -> item_key end)
   end
 
   def del_player(game_id, user_id) do
@@ -120,6 +170,13 @@ defmodule TopFive.Game do
     Agent.get(__MODULE__, fn map ->
       game = Map.get(map, game_id, %{})
       game_items_get(game)
+    end)
+  end
+
+  def get_rounds(game_id) do
+    Agent.get(__MODULE__, fn map ->
+      game = Map.get(map, game_id, %{})
+      game_rounds_get(game)
     end)
   end
 
