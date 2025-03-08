@@ -8,6 +8,11 @@ defmodule TopFiveWeb.GameChoosingComponent do
       <p class={cn(["font-bold"])}>
         <%= if @user.is_choosing do %>
           You must choose!
+          <%= if Map.get(@rounds, @user.id) do %>
+            <pre>
+            {inspect(Map.get(@rounds, @user.id))}
+            </pre>
+          <% end %>
         <% else %>
           {user =
             Enum.find(@users, fn user ->
