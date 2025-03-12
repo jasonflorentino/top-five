@@ -7,11 +7,15 @@ defmodule TopFiveWeb.GameChoosingComponent do
     <div>
       <p class={cn(["font-bold"])}>
         <%= if @user.is_choosing do %>
-          You must choose!
-          <%= if Map.get(@rounds, @user.id) do %>
-            <pre>
-            {inspect(Map.get(@rounds, @user.id))}
-            </pre>
+          You must choose! <% round = Map.get(@rounds, @user.id) %>
+          <%= if round do %>
+            <.live_component
+              module={TopFiveWeb.ItemRankingComponent}
+              id="chooser_rankings"
+              keys={round[:chooser_rankings]}
+              key_data={@items}
+              user={@user}
+            />
           <% end %>
         <% else %>
           {user =
