@@ -12,7 +12,7 @@ defmodule TopFiveWeb.ItemRankingComponent do
             <button
               phx-target={@myself}
               phx-click="change_rank"
-              phx-value-item_id={item_data[:id]}
+              phx-value-item_key={item_data[:key]}
               phx-value-rank_old={idx}
               phx-value-rank_new={idx - 1}
               class={
@@ -27,7 +27,7 @@ defmodule TopFiveWeb.ItemRankingComponent do
             <button
               phx-target={@myself}
               phx-click="change_rank"
-              phx-value-item_id={item_data[:id]}
+              phx-value-item_key={item_data[:key]}
               phx-value-rank_old={idx}
               phx-value-rank_new={idx + 1}
               class={
@@ -51,14 +51,14 @@ defmodule TopFiveWeb.ItemRankingComponent do
 
   def handle_event(
         "change_rank",
-        %{"item_id" => item_id, "rank_old" => rank_old, "rank_new" => rank_new},
+        %{"item_key" => item_key, "rank_old" => rank_old, "rank_new" => rank_new},
         socket
       ) do
-    IO.inspect(
-      %{"item_id" => item_id, "rank_old" => rank_old, "rank_new" => rank_new},
-      label: "jason:change"
-    )
+    keys =
+      Map.get(socket.assigns, :keys)
+      |> List.delete_at(String.to_integer(rank_old))
+      |> List.insert_at(String.to_integer(rank_new), item_key)
 
-    {:noreply, socket}
+    {:noreply, assign(socket, keys: keys)}
   end
 end
