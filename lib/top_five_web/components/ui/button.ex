@@ -2,16 +2,19 @@ defmodule TopFiveWeb.ButtonComponent do
   use Phoenix.LiveComponent
   import TopFive.Helpers
 
+  attr :class, :string, default: ""
+  attr :disabled, :boolean, default: false
+
   def render(assigns) do
     ~H"""
     <button
       id={@id}
-      disabled={Map.get(assigns, :disabled, false)}
+      disabled={@disabled}
       class={
         cn([
           "px-5 py-3 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed",
           getColor(Map.get(assigns, :variant)),
-          Map.get(assigns, :class, "")
+          @class
         ])
       }
     >
