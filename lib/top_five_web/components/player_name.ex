@@ -48,6 +48,9 @@ defmodule TopFiveWeb.PlayerNameComponent do
       ) do
     send(self(), {socket.assigns.submit_event, params})
 
+    socket =
+      push_event(socket, "local_storage_set", %{value: %{"player_name" => params["player_name"]}})
+
     {:noreply, assign(socket, input_value: "", disabled: true)}
   end
 end

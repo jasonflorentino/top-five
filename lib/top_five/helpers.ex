@@ -1,5 +1,5 @@
 defmodule TopFive.Helpers do
-  @game_prefix "tf_"
+  @game_prefix "game_"
   @thing_prefix "thing_"
   @user_prefix "user_"
 

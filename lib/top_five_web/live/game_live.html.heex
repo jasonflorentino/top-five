@@ -1,4 +1,5 @@
 <div>
+  <div id="local-storage" phx-hook="LocalStorage" />
   <%= case TopFive.Helpers.normalize_status(@game_status) do %>
     <% "game_status_setup" -> %>
       <.live_component

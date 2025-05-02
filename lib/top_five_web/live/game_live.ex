@@ -110,6 +110,42 @@ defmodule TopFiveWeb.GameLive do
     {:noreply, socket}
   end
 
+  def handle_event("local_storage_load", %{"value" => value}, socket) when is_map(value) do
+    handle_local_storage_load(value, socket)
+    {:noreply, socket}
+  end
+
+  def handle_event("local_storage_load", %{"value" => value}, socket) when is_binary(value) do
+    case Jason.decode(value) do
+      {:ok, value_parsed} ->
+        handle_local_storage_load(value_parsed, socket)
+
+      {:error, reason} ->
+        IO.inspect("JSON parsing error: #{inspect(reason)}")
+    end
+
+    {:noreply, socket}
+  end
+
+  def handle_local_storage_load(value, socket) do
+    IO.inspect(socket, label: "jason:socket")
+    IO.inspect(value, label: "jason:value")
+    player_name = Map.get(value, "player_name", nil)
+    IO.inspect(player_name, label: "jason:player_name")
+
+    if player_name do
+      payload = %{
+        "player_name" => player_name,
+        "player_id" => socket.assigns.user.id,
+        "game_id" => socket.assigns.game_id
+      }
+
+      IO.inspect(payload, label: "jason:payload")
+
+      send(self(), {:set_player_name, payload})
+    end
+  end
+
   # broadcasters
 
   defp broadcast_item_update(game_id, item_data) do

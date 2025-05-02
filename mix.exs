@@ -34,8 +34,8 @@ defmodule TopFive.MixProject do
     [
       {:phoenix, "~> 1.7.19"},
       {:phoenix_ecto, "~> 4.5"},
-      {:ecto_sql, "~> 3.10"},
-      {:ecto_sqlite3, ">= 0.0.0"},
+      {:ecto_sql, "~> 3.12"},
+      {:ecto_sqlite3, ">= 0.18.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.0.0"},
