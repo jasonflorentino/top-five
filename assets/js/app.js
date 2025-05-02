@@ -40,7 +40,7 @@ Hooks.LocalStorage = {
 
     this.handleEvent("local_storage_set", ({ key = this.key, value }) => {
       this.log("set", { key, value });
-      localStorage.setItem(key, value);
+      localStorage.setItem(key, JSON.stringify(value));
     });
   },
   isValidJSON(str) {
