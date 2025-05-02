@@ -1,8 +1,14 @@
 # TopFive
 
-A game to see how well you know your friends and how well they know you.
+(WIP!)
+
+A party game to see how well y'all know each other.
 
 Also baby's first Elixir project / Phoenix project / LiveView project.
+
+# Setup
+
+- You'll need the [Elixir](https://elixir-lang.org/) programming language
 
 # Development
 
