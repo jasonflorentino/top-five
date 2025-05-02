@@ -1,13 +1,18 @@
 # TopFive
 
-To start your Phoenix server:
+A game to see how well you know your friends and how well they know you.
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+Also baby's first Elixir project / Phoenix project / LiveView project.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+# Development
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+- `mix setup` to install and setup dependencies
+- `mix phx.server` to start Phoenix endpoint, or inside IEx with `iex -S mix phx.server`
+- App will be on http://localhost:4000
+
+# Deployment
+
+Deployment guides: https://hexdocs.pm/phoenix/deployment.html
 
 ## Learn more
 
